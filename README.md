@@ -1,4 +1,4 @@
-# Generated formatted publication list from Endnote XML
+# Generate formatted publication list from Endnote XML
 
 A simple Python script to convert a list of publications in [Endnote XML](https://gist.github.com/low-decarie/3831049) format into HTML or LaTeX formats. I use [BibDesk](http://bibdesk.sourceforge.net/) to manage my publication list, and it supports Endnote XML format as an o utput format.
 
