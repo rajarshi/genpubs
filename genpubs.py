@@ -104,6 +104,9 @@ class Publication:
 	if self.url and self.url.find('http://dx.doi.org') >= 0:
 	    doi = self.url.replace('http://dx.doi.org/', '')
 	    label = 'DOI'
+        elif self.url and self.url.find('rxiv') >= 0:
+            doi = self.url
+            label = 'Preprint'
 	elif self.url: 
 	    doi = self.url
 	    label = 'Link'
@@ -126,11 +129,11 @@ class Publication:
 
         if self.journal != "":
             self.journal += ","
-            
+
 	if not self.isPublished():
-	    s.write("<div class='pjournal'>%s, <b>%s</b>, %s</div>\n" % (self.formatJournal('html'), self.year, self.volume))
+	    s.write("<div class='pjournal'>%s <b>%s</b>, %s</div>\n" % (self.formatJournal('html'), self.year, self.volume))
 	else:
-	    s.write("<div class='pjournal'>%s, <b>%s</b>, <i>%s</i>, %s</div>\n" % (self.formatJournal('html'), self.year, self.volume, self.pages))	    
+	    s.write("<div class='pjournal'>%s <b>%s</b>, <i>%s</i>, %s</div>\n" % (self.formatJournal('html'), self.year, self.volume, self.pages))	    
 	s.write("<div class='pmisc'>\n")
         if show_abstract:
             toggletext = '''[ <a href="javascript:toggleLayer('abstract%d');">Abstract</a> ]''' % (id)
@@ -142,11 +145,11 @@ class Publication:
 	    %s
 	    [DOI <a href="%s">%s</a> ]
 	    """ % (toggletext, self.url, doi))
-	elif label == 'Link':
+	elif label in ['Link','Preprint']:
 	    s.write("""
 	    %s
-	    [ <a href="%s">Link</a> ]
-	    """ % (toggletext, self.url))
+	    [ <a href="%s">%s</a> ]
+	    """ % (toggletext, self.url, label))
         if show_abstract:
             s.write("<div id='abstract%d' class='absdiv'>%s</div>\n\n" % (id, self.abstract))
 	s.write("</div>\n</div>\n</div>\n")
