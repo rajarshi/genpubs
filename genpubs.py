@@ -166,8 +166,8 @@ class Publication:
         if label == 'DOI':
             s.write("""
         %s
-        [DOI <a href="%s">%s</a> ]
-        """ % (toggletext, self.url, doi))
+        [DOI <a href="%s">%s</a> ] <span style='display:inline;' class="__dimensions_badge_embed__" data-doi="%s" data-hide-zero-citations="false" data-style="small_circle"></span><script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
+        """ % (toggletext, self.url, doi, doi))
         elif label == 'Link':
             s.write("""
         %s
