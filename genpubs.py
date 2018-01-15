@@ -54,6 +54,7 @@ class Publication:
                  pages,
                  kwds=None,
                  url=None,
+                 doi=None,
                  abstract=None):
         self.index = -1
         self.authors = authorList
@@ -78,6 +79,7 @@ class Publication:
 
         self.abstract = abstract
         self.url = url
+        self.doi = doi
 
         self.kwds = kwds
 
@@ -118,7 +120,10 @@ class Publication:
         label = ''
         doi = None
 
-        if self.url and self.url.find('http://dx.doi.org') >= 0:
+        if self.doi:
+            doi = self.doi
+            label = 'DOI'
+        elif self.url and self.url.find('http://dx.doi.org') >= 0:
             doi = self.url.replace('http://dx.doi.org/', '')
             label = 'DOI'
         elif self.url:
@@ -128,8 +133,13 @@ class Publication:
         s = StringIO.StringIO()
         s.write("<div class='paper'>\n")
         #s.write("<div class='serial'>%d</div>\n" % (id))
-        s.write("<div class='ptitle'><span class='pubindex'>%d.</span> %s</div>\n" %
-                (self.index, self.title.replace('{', '').replace('}', '')))
+
+        if label == 'DOI':
+            badge = """<span style='display:inline; float: right' class="__dimensions_badge_embed__" data-doi="%s" data-hide-zero-citations="false" data-style="small_circle"></span><script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>""" % (doi)
+        else:
+            badge = ""
+        s.write("<div class='ptitle'><span class='pubindex'>%d.</span> %s %s</div>\n" %
+                (self.index, self.title.replace('{', '').replace('}', ''), badge))
         s.write("<div class='pdetails'>\n")
         s.write("<div class='pauthor'>\n")
 
@@ -166,8 +176,8 @@ class Publication:
         if label == 'DOI':
             s.write("""
         %s
-        [DOI <a href="%s">%s</a> ] <span style='display:inline;' class="__dimensions_badge_embed__" data-doi="%s" data-hide-zero-citations="false" data-style="small_circle"></span><script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
-        """ % (toggletext, self.url, doi, doi))
+        [DOI <a href="%s">%s</a> ] 
+        """ % (toggletext, self.url, doi))
         elif label == 'Link':
             s.write("""
         %s
@@ -430,6 +440,12 @@ if __name__ == '__main__':
         else:
             url = url[0].text
 
+        doi = record.findall('electronic-resource-num')
+        if not doi:
+            doi = ''
+        else:
+            doi = doi[0].text
+
         abstract = record.findall('abstract')
         if not abstract:
             abstract = ''
@@ -444,7 +460,7 @@ if __name__ == '__main__':
             kwds = [x.strip() for x in kwds[0].text.split(';')]
         title = title.encode('ascii', 'ignore')
         p = Publication(authors, title, journal, year,
-                        volume, number, pages, kwds, url, abstract)
+                        volume, number, pages, kwds, url, doi, abstract)
         p.setMyself(myself)
         pubs.append(p)
 
