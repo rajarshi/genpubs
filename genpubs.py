@@ -126,6 +126,9 @@ class Publication:
         elif self.url and self.url.find('http://dx.doi.org') >= 0:
             doi = self.url.replace('http://dx.doi.org/', '')
             label = 'DOI'
+        elif self.url and self.url.find('https://dx.doi.org') >= 0:
+            doi = self.url.replace('https://dx.doi.org/', '')
+            label = 'DOI'
         elif self.url:
             doi = self.url
             label = 'Link'
