@@ -101,15 +101,18 @@ class Publication:
 	label = ''
 	doi = None
 
-	if self.url and self.url.find('http://dx.doi.org') >= 0:
-	    doi = self.url.replace('http://dx.doi.org/', '')
-	    label = 'DOI'
-        elif self.url and self.url.find('rxiv') >= 0:
-            doi = self.url
-            label = 'Preprint'
-	elif self.url: 
-	    doi = self.url
-	    label = 'Link'
+        doi_re = re.compile("^https?://(dx\.)?doi.org/")
+        if self.url:
+            doi_match = doi_re.search(self.url.strip())
+            if self.url.find('rxiv') >= 0:
+                doi = self.url
+                label = 'Preprint'
+            elif doi_match is not None:
+                doi = doi_re.sub("", self.url)
+                label = 'DOI'
+            else: 
+                doi = self.url
+                label = 'Link'
 
 	s = StringIO.StringIO()
 	s.write("<div class='paper'>\n")
